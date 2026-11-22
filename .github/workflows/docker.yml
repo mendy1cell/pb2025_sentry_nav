@@ -8,7 +8,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
-  ROS_DISTRO: humble
+  ROS_DISTRO: jazzy
   BRANCH: main
 
 jobs:

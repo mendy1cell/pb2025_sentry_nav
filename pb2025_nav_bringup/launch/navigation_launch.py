@@ -28,6 +28,7 @@ from nav2_common.launch import RewrittenYaml
 def generate_launch_description():
     # Get the launch directory
     bringup_dir = get_package_share_directory("pb2025_nav_bringup")
+    nav2_bringup_dir = get_package_share_directory("nav2_bringup")
 
     namespace = LaunchConfiguration("namespace")
     use_sim_time = LaunchConfiguration("use_sim_time")
@@ -60,6 +61,14 @@ def generate_launch_description():
             convert_types=True,
         ),
         allow_substs=True,
+    )
+
+    # Jazzy's BT navigator has a stricter parameter schema than older Nav2
+    # releases. Keep it on the distribution-provided parameter set instead of
+    # passing the application's large combined parameter file through
+    # RewrittenYaml. The remaining nodes continue to use configured_params.
+    bt_navigator_params = ParameterFile(
+        os.path.join(nav2_bringup_dir, "params", "nav2_params.yaml")
     )
 
     stdout_linebuf_envvar = SetEnvironmentVariable(
@@ -217,7 +226,7 @@ def generate_launch_description():
                 output="screen",
                 respawn=use_respawn,
                 respawn_delay=2.0,
-                parameters=[configured_params],
+                parameters=[bt_navigator_params],
                 arguments=["--ros-args", "--log-level", log_level],
                 remappings=[
                     ("cmd_vel", "cmd_vel_nav2_result"),  # remap output
@@ -316,7 +325,7 @@ def generate_launch_description():
                 package="nav2_bt_navigator",
                 plugin="nav2_bt_navigator::BtNavigator",
                 name="bt_navigator",
-                parameters=[configured_params],
+                parameters=[bt_navigator_params],
             ),
             ComposableNode(
                 package="nav2_waypoint_follower",

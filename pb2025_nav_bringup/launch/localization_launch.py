@@ -126,6 +126,8 @@ def generate_launch_description():
         parameters=[
             configured_params,
             {"prior_pcd.prior_pcd_map_path": prior_pcd_file},
+            # Gazebo Sim publishes sensor data in the global namespace.
+            {"common.imu_topic": "/livox/imu"},
         ],
         arguments=["--ros-args", "--log-level", log_level],
     )

@@ -64,7 +64,7 @@ FakeVelTransform::FakeVelTransform(const rclcpp::NodeOptions & options)
   local_plan_sub_filter_.registerCallback(
     std::bind(&FakeVelTransform::localPlanCallback, this, std::placeholders::_1));
 
-  // In Navigation2 Humble release, the velocity is published by the controller without timestamped.
+  // The Nav2 command chain is configured to publish an unstamped Twist for compatibility with the simulator and hardware adapter.
   // We consider the velocity is published at the same time as local_plan.
   // Therefore, we use ApproximateTime policy to synchronize `cmd_vel` and `odometry`.
   sync_ = std::make_unique<message_filters::Synchronizer<SyncPolicy>>(

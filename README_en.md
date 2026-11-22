@@ -89,8 +89,8 @@ docker run -it --rm --name pb2025_sentry_nav \
 
 #### 2.2.1 Setup Environment
 
-- Ubuntu 22.04
-- ROS: [Humble](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debs.html)
+- Ubuntu 24.04
+- ROS: [Jazzy](https://docs.ros.org/en/jazzy/Installation/Ubuntu-Install-Debs.html)
 - Simulation package（Option）：[rmu_gazebo_simulator](https://github.com/SMBU-PolarBear-Robotics-Team/rmu_gazebo_simulator)
 - Install [small_icp](https://github.com/koide3/small_gicp):
 
@@ -139,6 +139,26 @@ colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
 You can start the project with the following commands. Use the `Nav2 Goal` plugin in RViz to publish goal pose.
 
 #### 2.3.1 Simulation
+
+Start the simulator and navigation in separate terminals. In the first terminal, start the Gazebo Sim project:
+
+```bash
+cd ~/VSG/Sentry_thunder_817
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
+
+ros2 launch gz_livox_simulation gz_simulation.launch.py \
+  world:=rmuc_2025
+```
+
+Then start navigation from the second terminal:
+
+```bash
+cd ~/VSG/reference/pb2025_sentry_nav
+source /opt/ros/jazzy/setup.bash
+source ~/VSG/Sentry_thunder_817/install/setup.bash
+source install/setup.bash
+```
 
 Single Robot:
 

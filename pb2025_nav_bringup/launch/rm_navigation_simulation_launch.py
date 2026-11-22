@@ -44,6 +44,7 @@ def generate_launch_description():
     use_respawn = LaunchConfiguration("use_respawn")
     rviz_config_file = LaunchConfiguration("rviz_config_file")
     use_rviz = LaunchConfiguration("use_rviz")
+    headless = LaunchConfiguration("headless")
 
     configured_params = ParameterFile(
         RewrittenYaml(
@@ -136,14 +137,100 @@ def generate_launch_description():
         "use_rviz", default_value="True", description="Whether to start RVIZ"
     )
 
+    declare_headless_cmd = DeclareLaunchArgument(
+        "headless", default_value="False",
+        description="Run Gazebo without its GUI",
+    )
+
+    gazebo_cmd = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(
+                get_package_share_directory("gz_livox_simulation"),
+                "launch", "gz_simulation.launch.py",
+            )
+        ),
+        launch_arguments={
+            "world": world,
+            "headless": headless,
+            "use_sim_time": use_sim_time,
+        }.items(),
+    )
+
     start_velodyne_convert_tool = Node(
         package="ign_sim_pointcloud_tool",
         executable="ign_sim_pointcloud_tool_node",
         name="ign_sim_pointcloud_tool",
         output="screen",
         namespace=namespace,
-        parameters=[configured_params],
+        parameters=[configured_params, {"pcd_topic": "/livox/lidar/pointcloud"}],
     )
+
+    # The external Gazebo model publishes the sensor transforms, while this
+    # navigation stack also uses the legacy chassis and gimbal frame names.
+    # Keep those frames connected in simulation so Point-LIO and RViz can
+    # transform the converted cloud.
+    simulation_static_transforms = [
+        Node(
+            package="tf2_ros",
+            executable="static_transform_publisher",
+            name="simulation_base_to_footprint",
+            namespace=namespace,
+            remappings=[("/tf_static", "tf_static")],
+            arguments=[
+                "--x", "0", "--y", "0", "--z", "0",
+                "--roll", "0", "--pitch", "0", "--yaw", "0",
+                "--frame-id", "base_link", "--child-frame-id", "base_footprint",
+            ],
+        ),
+        Node(
+            package="tf2_ros",
+            executable="static_transform_publisher",
+            name="simulation_base_to_gimbal",
+            namespace=namespace,
+            remappings=[("/tf_static", "tf_static")],
+            arguments=[
+                "--x", "0", "--y", "0", "--z", "0",
+                "--roll", "0", "--pitch", "0", "--yaw", "0",
+                "--frame-id", "base_link", "--child-frame-id", "gimbal_yaw",
+            ],
+        ),
+        Node(
+            package="tf2_ros",
+            executable="static_transform_publisher",
+            name="simulation_gimbal_to_fake",
+            namespace=namespace,
+            remappings=[("/tf_static", "tf_static")],
+            arguments=[
+                "--x", "0", "--y", "0", "--z", "0",
+                "--roll", "0", "--pitch", "0", "--yaw", "0",
+                "--frame-id", "gimbal_yaw", "--child-frame-id", "gimbal_yaw_fake",
+            ],
+        ),
+        Node(
+            package="tf2_ros",
+            executable="static_transform_publisher",
+            name="simulation_base_to_imu",
+            namespace=namespace,
+            remappings=[("/tf_static", "tf_static")],
+            arguments=[
+                "--x", "-0.011", "--y", "-0.02329", "--z", "0.70412",
+                "--roll", "0", "--pitch", "0", "--yaw", "0",
+                "--frame-id", "base_link", "--child-frame-id", "imu_link",
+            ],
+        ),
+        Node(
+            package="tf2_ros",
+            executable="static_transform_publisher",
+            name="simulation_base_to_lidar",
+            namespace=namespace,
+            remappings=[("/tf_static", "tf_static")],
+            arguments=[
+                "--x", "0", "--y", "0", "--z", "0.66",
+                "--roll", "0", "--pitch", "0", "--yaw", "0",
+                "--frame-id", "base_link", "--child-frame-id", "lidar_link",
+            ],
+        ),
+    ]
 
     rviz_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(os.path.join(launch_dir, "rviz_launch.py")),
@@ -193,10 +280,14 @@ def generate_launch_description():
     ld.add_action(declare_use_composition_cmd)
     ld.add_action(declare_rviz_config_file_cmd)
     ld.add_action(declare_use_rviz_cmd)
+    ld.add_action(declare_headless_cmd)
     ld.add_action(declare_use_respawn_cmd)
 
     # Add the actions to launch all of the navigation nodes
     ld.add_action(start_velodyne_convert_tool)
+    ld.add_action(gazebo_cmd)
+    for static_transform in simulation_static_transforms:
+        ld.add_action(static_transform)
     ld.add_action(bringup_cmd)
     ld.add_action(joy_teleop_cmd)
     ld.add_action(rviz_cmd)

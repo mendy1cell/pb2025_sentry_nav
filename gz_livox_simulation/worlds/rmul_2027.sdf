@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<sdf version="1.9">
+  <!-- Named "default" like the pb_rm_simulation arenas: gz_simulation.launch.py
+       spawns the sentry with `ros_gz_sim create -world default`. -->
+  <world name="default">
+    <!-- DART with the Bullet collision detector, as in RMUC2026.sdf. DART's
+         default detector (ODE) has no raycast support, so the Livox system
+         gets no returns and the LIO diverges. -->
+    <physics name="default_physics" type="dart">
+      <max_step_size>0.002</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+      <dart>
+        <collision_detector>bullet</collision_detector>
+      </dart>
+    </physics>
+    <gravity>0 0 -9.81</gravity>
+    <scene>
+      <ambient>0.4 0.4 0.4 1</ambient>
+      <background>0.7 0.7 0.7 1</background>
+      <shadows>true</shadows>
+    </scene>
+    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics"/>
+    <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands"/>
+    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"/>
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+
+    <!-- RMUL 2027 arena, 12.6 x 8.6 m. The STL is in millimetres with Y up
+         (12600 x 520 x 8600), so it is scaled by 0.001 and rolled -90 deg
+         onto the X-Y plane; z +0.52 puts the mesh bottom at z = 0. The main
+         floor is then at z = 0.10. The robot is spawned by the launch file
+         (gz_simulation.launch.py RMUL_2027_CONFIG), not included here. -->
+    <model name="terrain_rmul_2027">
+      <static>true</static>
+      <pose>0 0 0.52 -1.5707963267949 0 0</pose>
+      <link name="terrain_link">
+        <collision name="terrain_collision">
+          <geometry>
+            <mesh>
+              <uri>meshes/rmul_2027.stl</uri>
+              <scale>0.001 0.001 0.001</scale>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name="terrain_visual">
+          <geometry>
+            <mesh>
+              <uri>meshes/rmul_2027.stl</uri>
+              <scale>0.001 0.001 0.001</scale>
+            </mesh>
+          </geometry>
+          <material>
+            <ambient>0.3 0.3 0.3 1</ambient>
+            <diffuse>0.7 0.7 0.7 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <light name="sun" type="directional">
+      <pose>6.3 4.3 8 0 0 0</pose>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.1 0.1 0.1 1</specular>
+      <direction>0.1 0.1 -0.9</direction>
+      <cast_shadows>true</cast_shadows>
+    </light>
+  </world>
+</sdf>

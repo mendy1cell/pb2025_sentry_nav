@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<sdf version="1.9">
+  <world name="rmuc_2027">
+    <physics name="1ms" type="ignored"><max_step_size>0.001</max_step_size><real_time_factor>1</real_time_factor></physics>
+    <gravity>0 0 -9.81</gravity>
+    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics"/>
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors"><render_engine>ogre2</render_engine></plugin>
+
+    <!-- RMUC 2027 terrain mesh: 28m × 16m × 3.8m, 378,666 triangles -->
+    <model name="terrain_rmuc_2027">
+      <static>true</static>
+      <link name="terrain_link">
+        <collision name="terrain_collision">
+          <geometry>
+            <mesh>
+              <uri>meshes/rmuc_2027.stl</uri>
+            </mesh>
+          </geometry>
+          <surface>
+            <friction>
+              <ode>
+                <mu>0.9</mu>
+                <mu2>0.9</mu2>
+              </ode>
+            </friction>
+          </surface>
+        </collision>
+        <visual name="terrain_visual">
+          <geometry>
+            <mesh>
+              <uri>meshes/rmuc_2027.stl</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <ambient>0.5 0.5 0.5 1</ambient>
+            <diffuse>0.7 0.7 0.7 1</diffuse>
+            <specular>0.1 0.1 0.1 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <include>
+      <uri>model://sentry_robot</uri>
+      <pose>6.35 7.6 0.2 0 0 0</pose>
+    </include>
+  </world>
+</sdf>

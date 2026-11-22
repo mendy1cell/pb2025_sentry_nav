@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<sdf version="1.9">
+  <model name="RMUL2024_world">
+    <static>true</static>
+    <link name="link">
+      <visual name="visual">
+        <pose>0 0 0 -1.5705 0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>model://RMUL2024_world/meshes/RMUL_2024.stl</uri>
+            <scale>0.001 0.001 0.001</scale>
+          </mesh>
+        </geometry>
+        <material>
+          <ambient>0.3 0.3 0.3 1</ambient>
+          <diffuse>0.7 0.7 0.7 1</diffuse>
+          <specular>0.01 0.01 0.01 1</specular>
+        </material>
+      </visual>
+      <collision name="collision">
+        <pose>0 0 0 -1.5705 0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>model://RMUL2024_world/meshes/RMUL_2024.stl</uri>
+            <scale>0.001 0.001 0.001</scale>
+          </mesh>
+        </geometry>
+        <surface>
+          <friction>
+            <ode>
+              <mu>1</mu>
+              <mu2>1</mu2>
+            </ode>
+          </friction>
+        </surface>
+      </collision>
+    </link>
+  </model>
+</sdf>

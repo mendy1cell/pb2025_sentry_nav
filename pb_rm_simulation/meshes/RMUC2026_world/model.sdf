@@ -1,0 +1,44 @@
+<?xml version="1.0" ?>
+<sdf version="1.9">
+  <model name="RMUC2026_world">
+    <static>true</static>
+    <link name="link">
+      <!-- The arena floor is a 0.2 m slab whose top is two ~233 m² mesh
+           triangles. Bullet's box-vs-trimesh contact on triangles that large
+           lets a driven chassis sink through the slab. This primitive box
+           duplicates the slab exactly (x 0.376..29.426, y 0..16.05, z 0..0.2)
+           so ground contact is box-vs-box; the mesh still provides everything
+           above the floor. -->
+      <collision name="floor_slab">
+        <pose>14.901 8.025 0.1 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>29.05 16.05 0.2</size>
+          </box>
+        </geometry>
+      </collision>
+      <collision name="collision">
+        <geometry>
+          <mesh>
+            <uri>model://RMUC2026_world/meshes/RMUC2026_world.stl</uri>
+            <scale>0.001 0.001 0.001</scale>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name="visual">
+        <geometry>
+          <mesh>
+            <uri>model://RMUC2026_world/meshes/RMUC2026_world.stl</uri>
+            <scale>0.001 0.001 0.001</scale>
+          </mesh>
+        </geometry>
+        <material>
+          <ambient>0.3 0.3 0.3 1</ambient>
+          <diffuse>0.7 0.7 0.7 1</diffuse>
+          <specular>0.01 0.01 0.01 1</specular>
+          <emissive>0 0 0 1</emissive>
+        </material>
+      </visual>
+    </link>
+  </model>
+</sdf>

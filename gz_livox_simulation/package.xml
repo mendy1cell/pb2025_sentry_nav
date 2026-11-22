@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>gz_livox_simulation</name>
+  <version>0.1.0</version>
+  <description>Gazebo Sim 8/Harmonic rotating Livox raycast simulator.</description>
+  <maintainer email="stm32f303ret6@gmail.com">rsc</maintainer>
+  <license>TODO</license>
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <depend>rclcpp</depend>
+  <depend>ament_index_cpp</depend>
+  <depend>livox_ros_driver2</depend>
+  <depend>sensor_msgs</depend>
+  <depend>gz_plugin_vendor</depend>
+  <depend>gz_msgs_vendor</depend>
+  <depend>gz_sim_vendor</depend>
+  <depend>gz_transport_vendor</depend>
+  <depend>sdformat_vendor</depend>
+  <depend>gz-plugin2</depend>
+  <depend>gz-msgs10</depend>
+  <depend>gz-sim8</depend>
+  <depend>gz-transport13</depend>
+  <depend>sdformat14</depend>
+  <exec_depend>ros_gz_sim</exec_depend>
+  <exec_depend>ros_gz_bridge</exec_depend>
+  <exec_depend>pb_rm_simulation</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>rosgraph_msgs</exec_depend>
+  <exec_depend>ros2_livox_simulation</exec_depend>
+  <exec_depend>tf2_ros</exec_depend>
+  <test_depend>ament_cmake_gtest</test_depend>
+  <test_depend>ament_cmake_pytest</test_depend>
+  <export><build_type>ament_cmake</build_type></export>
+</package>

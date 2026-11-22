@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<sdf version="1.9">
+  <!-- Sensor pose and scan configuration migrated from Classic mid360.xacro. -->
+  <model name="livox_mid360">
+    <static>true</static>
+    <link name="livox_frame">
+      <sensor name="livox_csv_raycast" type="custom">
+        <always_on>true</always_on><update_rate>10</update_rate>
+        <topic>/livox/lidar</topic>
+        <plugin filename="libgz_livox_raycast_system.so" name="gz_livox_simulation::LivoxRaycastSystem">
+          <csv_file_name>package://ros2_livox_simulation/scan_mode/mid360.csv</csv_file_name>
+          <samples>30000</samples><downsample>1</downsample>
+          <min_range>0.1</min_range><max_range>200.0</max_range>
+          <scan_rate_hz>10</scan_rate_hz><frame_id>livox_frame</frame_id>
+          <topic>/livox/lidar</topic>
+        </plugin>
+      </sensor>
+    </link>
+  </model>
+</sdf>

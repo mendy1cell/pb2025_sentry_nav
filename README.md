@@ -89,8 +89,8 @@ docker run -it --rm --name pb2025_sentry_nav \
 
 #### 2.2.1 Setup Environment
 
-- Ubuntu 22.04
-- ROS: [Humble](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debs.html)
+- Ubuntu 24.04
+- ROS: [Jazzy](https://docs.ros.org/en/jazzy/Installation/Ubuntu-Install-Debs.html)
 - 配套仿真包（Option）：[rmu_gazebo_simulator](https://github.com/SMBU-PolarBear-Robotics-Team/rmu_gazebo_simulator)
 - Install [small_icp](https://github.com/koide3/small_gicp):
 
@@ -139,6 +139,26 @@ colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
 可使用以下命令启动，在 RViz 中使用 `Nav2 Goal` 插件发布目标点。
 
 #### 2.3.1 仿真
+
+仿真器和导航分别启动。在第一个终端启动你提供的 Gazebo Sim 工程：
+
+```bash
+cd ~/VSG/Sentry_thunder_817
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
+
+ros2 launch gz_livox_simulation gz_simulation.launch.py \
+  world:=rmuc_2025
+```
+
+然后在第二个终端启动本项目的导航：
+
+```bash
+cd ~/VSG/reference/pb2025_sentry_nav
+source /opt/ros/jazzy/setup.bash
+source ~/VSG/Sentry_thunder_817/install/setup.bash
+source install/setup.bash
+```
 
 单机器人：
 

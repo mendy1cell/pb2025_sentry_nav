@@ -1,8 +1,13 @@
-FROM ros:humble-ros-base
+ARG ROS_DISTRO=jazzy
+FROM ros:${ROS_DISTRO}-ros-base
 
-RUN sudo apt update && \
-    sudo apt install python3-pip curl wget htop vim unzip -y && \
-    pip install xmacro gdown
+ARG ROS_DISTRO=jazzy
+ARG BRANCH=main
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends python3-pip curl wget htop vim unzip ca-certificates git && \
+    python3 -m pip install --break-system-packages xmacro gdown && \
+    rm -rf /var/lib/apt/lists/*
 
 # setup zsh
 RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/v1.2.1/zsh-in-docker.sh)" -- \
@@ -27,12 +32,13 @@ RUN apt install -y libeigen3-dev libomp-dev && \
 # create workspace
 RUN mkdir -p ~/ros_ws && \
     cd ~/ros_ws && \
-    git clone --recursive https://github.com/SMBU-PolarBear-Robotics-Team/pb2025_sentry_nav.git src/pb2025_sentry_nav
+    git clone --recursive --branch ${BRANCH} https://github.com/SMBU-PolarBear-Robotics-Team/pb2025_sentry_nav.git src/pb2025_sentry_nav
 
 WORKDIR /root/ros_ws
 
 # install dependencies and some tools
-RUN rosdep install -r --from-paths src --ignore-src --rosdistro $ROS_DISTRO -y
+RUN rosdep update && \
+    rosdep install -r --from-paths src --ignore-src --rosdistro $ROS_DISTRO -y
 
 # Download simulation pcd files
 RUN gdown https://drive.google.com/uc\?id\=1kAxdOU-mi1TcLssyKmDR0pz0ojF96jQ4 -O /tmp/simulation_pcd.zip && \

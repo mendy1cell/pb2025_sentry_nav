@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>ros2_livox_simulation</name>
+  <version>0.0.0</version>
+  <description>Canonical Livox Mid-360 scan-pattern assets for the Jazzy Gazebo Sim rotating-ray adapter.</description>
+  <maintainer email="stm32f303ret6@gmail.com">rsc</maintainer>
+  <license>TODO: License declaration</license>
+
+  <buildtool_depend>ament_cmake_auto</buildtool_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+
+</package>
